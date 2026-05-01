@@ -1,0 +1,8 @@
+PLANT|1|Treebeard
+PLANT|2|Treebeard
+PLANT|3|Treebeard
+LOG|1|Planting
+LOG|1|Watering
+LOG|2|Planting
+LOG|3|Planting
+LOG|2|Watering
