@@ -19,6 +19,7 @@ public class ConsoleUI {
                     .AddChoices(new[] {
                         "log new plant",
                         "log activity",
+                        "garden overview",
                         "end"
                     }));
 
@@ -27,6 +28,9 @@ public class ConsoleUI {
             }
             else if(command == "log activity") {
                 LogActivity();
+            }
+            else if(command == "garden overview"){
+                ShowGardenOverview();
             }
 
         } while(command != "end");
@@ -50,10 +54,7 @@ public class ConsoleUI {
             return;
         }
 
-        Plant selectedPlant = AnsiConsole.Prompt(
-            new SelectionPrompt<Plant>()
-                .Title("Select a plant")
-                .AddChoices(dataManager.Plants));
+        Plant selectedPlant = SelectPlant();
 
         ActivityType selectedActivity = AnsiConsole.Prompt(
             new SelectionPrompt<ActivityType>()
@@ -74,5 +75,65 @@ public class ConsoleUI {
         dataManager.AddActivityLog(selectedPlant, selectedActivity,comments);
 
         Console.WriteLine($"{selectedActivity} logged for {selectedPlant}.");
+    }
+    private Plant SelectPlant(){
+        return AnsiConsole.Prompt(new SelectionPrompt<Plant>().Title("Select plant").AddChoices(dataManager.Plants));
+    }
+    private void ShowGardenOverview(){
+        if(dataManager.Plants.Count == 0){
+            Console.WriteLine("No plants logged - log a plant first.");
+            return;
+        }
+        string command;
+        do{
+            command = AnsiConsole.Prompt(
+                new SelectionPrompt<string>().Title("Garden Overview").AddChoices(new[]{
+                    "list plants",
+                    "view selected plant",
+                    "back"
+                }));
+            if(command == "list plants"){ShowPlantList();}
+            else if(command == "view selected plant"){
+                Plant selectedPlant = SelectPlant();
+                ShowSelectedPlantOverview(selectedPlant);
+            }
+        }while(command != "back");
+    }
+    private void ShowPlantList(){
+        Table table = new Table();
+        table.AddColumn("ID");
+        table.AddColumn("Name");
+        table.AddColumn("Type");
+        foreach(Plant plant in dataManager.Plants.OrderBy(plant => plant.Id)){
+            table.AddRow(
+                plant.Id.ToString(),
+                plant.Name,
+                plant.Type
+            );
+        }
+        AnsiConsole.Write(table);
+    }
+    private void ShowSelectedPlantOverview(Plant plant){
+    AnsiConsole.MarkupLine($"[bold]Plant:[/] {plant.Name}");
+    AnsiConsole.MarkupLine($"[bold]Type:[/] {plant.Type}");
+    AnsiConsole.WriteLine();
+    List<ActivityLog> logs = dataManager.GetActivityLogsForPlant(plant);
+    if(logs.Count == 0){
+        Console.WriteLine("No logs found for selected plant.");
+        return;
+    }
+    Table table = new Table();
+    table.AddColumn("Date/Time");
+    table.AddColumn("Activity");
+    table.AddColumn("Comments");
+    foreach(ActivityLog log in logs){
+        table.AddRow(
+            log.Timestamp.ToString("yyyy-MM-dd HH:mm"),
+            log.ActivityType.ToString(),
+            log.Comments
+        );
+    }
+
+    AnsiConsole.Write(table);
     }
 }
