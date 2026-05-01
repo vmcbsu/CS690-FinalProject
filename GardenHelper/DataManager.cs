@@ -18,6 +18,8 @@ public class DataManager{
         Plant plant = new Plant(nextPlantId,name);
         nextPlantId++;
         Plants.Add(plant);
+        ActivityLog plantingLog = new ActivityLog(plant.Id, ActivityType.Planting);
+        ActivityLogs.Add(plantingLog);
         SaveData();
         return plant;
     }
@@ -27,7 +29,7 @@ public class DataManager{
         SaveData();
     }
     private void SaveData(){
-        list<string> lines = new List<string>();
+        List<string> lines = new List<string>();
         foreach(Plant plant in Plants){
             lines.Add($"PLANT|{plant.Id}|{Escape(plant.Name)}");
         }
