@@ -1,0 +1,4 @@
+PLANT|1|Treebeard
+LOG|1|Planting
+LOG|1|Watering
+LOG|1|Pruning
