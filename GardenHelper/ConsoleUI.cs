@@ -35,15 +35,17 @@ public class ConsoleUI {
     private void LogNewPlant() {
         string plantName = AnsiConsole.Prompt(
             new TextPrompt<string>("Plant name:"));
+        string plantType = AnsiConsole.Prompt(
+            new TextPrompt<string>("Plant type:"));
 
-        Plant plant = dataManager.AddPlant(plantName);
+        Plant plant = dataManager.AddPlant(plantName,plantType);
 
         Console.WriteLine($"Plant logged: {plant}");
     }
 
     private void LogActivity() {
         if(dataManager.Plants.Count == 0) {
-            Console.WriteLine("No plants ogged yet.");
+            Console.WriteLine("No plants logged yet.");
             Console.WriteLine("Log a new plant first.");
             return;
         }
@@ -62,7 +64,14 @@ public class ConsoleUI {
                     ActivityType.Change
                 }));
 
-        dataManager.AddActivityLog(selectedPlant, selectedActivity);
+        string comments;
+        if(selectedActivity == ActivityType.Change){
+            comments = AnsiConsole.Prompt(new TextPrompt<string>("Description of change:"));}
+            else{
+                comments = AnsiConsole.Prompt(new TextPrompt<string>("Comments (optional):").AllowEmpty());
+            
+        }
+        dataManager.AddActivityLog(selectedPlant, selectedActivity,comments);
 
         Console.WriteLine($"{selectedActivity} logged for {selectedPlant}.");
     }

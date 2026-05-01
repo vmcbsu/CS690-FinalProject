@@ -6,7 +6,7 @@ public class GardenIO{
         foreach(Plant plant in plants){
             lines.Add($"PLANT|{plant.Id}|{Escape(plant.Name)}|{Escape(plant.Type)}");
         }
-        foreach(ActivityLog in activityLogs){
+        foreach(ActivityLog log in activityLogs){
             lines.Add($"LOG|{log.PlantId}|{log.ActivityType}|{log.Timestamp:O}|{Escape(log.Comments)}");
         }
         File.WriteAllLines(filePath, lines);
