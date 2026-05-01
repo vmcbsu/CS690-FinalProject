@@ -27,6 +27,9 @@ public class DataManager{
         AddActivityLogWithoutSaving(plant,activityType,comments);
         SaveData();
     }
+    public List<ActivityLog> GetActivityLogsForPlant(Plant plant){
+        return ActivityLogs.Where(log => log.PlantId == plant.Id).OrderBy(log => log.Timestamp).ToList();
+    }
     private void AddActivityLogWithoutSaving(Plant plant, ActivityType activityType,string comments){
         ActivityLog log = new ActivityLog(plant.Id,activityType,DateTime.Now,comments);
         ActivityLogs.Add(log);
